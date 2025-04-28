@@ -1,0 +1,15 @@
+poolOptions:
+
+In Sequelize, the poolOptions object is used to configure the connection pool. A connection pool is a cache of database connections maintained so that connections can be reused when future requests to the database are required. This improves performance and resource management. Here’s an explanation of each option in poolOptions:
+
+max:
+The maximum number of connections allowed in the pool. If the number of active connections reaches this limit, additional requests will wait until a connection is released. This helps to control resource usage and prevent overwhelming the database.
+
+min:
+The minimum number of connections the pool will maintain, even if they are idle. This ensures that a certain number of connections are always ready for incoming requests, reducing the delay caused by establishing a new connection when needed.
+
+acquire:
+The maximum time (in milliseconds) that Sequelize will wait for a connection from the pool before throwing an error. If a connection isn’t available within this time, an error will be raised. This option helps manage timeouts when the pool is under heavy load.
+
+idle:
+The maximum time (in milliseconds) that a connection can remain idle (unused) in the pool before it is released. This helps free up resources by closing connections that are no longer needed.

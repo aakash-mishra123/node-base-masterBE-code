@@ -1,0 +1,44 @@
+1. First pull the nginx image: docker pull nginx
+2. created a nginx.conf file somewhere and mount to nginx actual conf file: 
+docker run --name my-nginx -v /path/to/nginx.conf:/etc/nginx/nginx.conf:ro -p 8080:8080 -d nginx
+3. edit your nginx.conf file and restart the container
+events {
+  worker_connections 1024;
+}
+
+http {
+  server {
+    listen 8080;
+
+    # Proxy requests starting with /api/ to Node.js (port 8000)
+     location /api/ {
+      proxy_pass http://host.docker.internal:8000/;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection 'upgrade';
+      proxy_set_header Host $host;
+      proxy_cache_bypass $http_upgrade;
+    }
+
+    # Proxy all other requests to the frontend (port 3000)
+    location / {
+      proxy_pass http://host.docker.internal:3000;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection 'upgrade';
+      proxy_set_header Host $host;
+      proxy_cache_bypass $http_upgrade;
+    }
+  }
+}
+
+
+4. Remove the /api from nodejs server.
+5. put the base url of development and production in .env file in FE.
+
+VITE_MODE='DEVELOPMENT'
+VITE_API_BASE_URL='http://localhost:8000/v1
+
+VITE_MODE='PRODUCTION'
+VITE_API_BASE_URL='http://localhost:8000/api/v1
+

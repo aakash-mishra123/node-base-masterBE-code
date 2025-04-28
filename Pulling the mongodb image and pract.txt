@@ -1,0 +1,101 @@
+*Pulling the mongodb image and practice mongodb queries.
+1.  docker run -it --name mongo_container -e MONGODB_INITDB_ROOT_USERNAME=root -e MONGODB_INITDB_ROOT_PASSWORD=abhay -v C:\Users\orange\Desktop\mongodb-data:/data/db -p 27017:27017 mongo
+2. docker exec -it mongo_container bash
+3. mongosh
+
+Q: Create two tables employee, salary.
+Q. Join the two tables employee and salary.
+Ans: When joining the joined table fields came in an array hence we have to unwind it to get in an object format.
+We can also sort the result based on the salary which is inside SalaryDetails.
+db.employee.aggregate([ 
+    { 
+        $lookup:{ 
+            from: "salary", 
+            localField: "SALARY_ID",  
+            foreignField: "SALARY_ID", 
+            as: "SalaryDetails"
+        } 
+    },
+    {
+        $unwind: "$SalaryDetails"
+    },
+    {
+        $sort: { "SalaryDetails.SALARY": -1 }
+    }
+])
+
+2. Find all employees having maximum salary.
+Ans: 
+ - First find the maximum salary value and store in db server
+	var maxSalary = db.salary.find().sort({SALARY: -1}).limit(1).next().SALARY
+ - Then use aggregation to join employee and salary and filter out the employees based on the maximum value.
+db.employee.aggregate([ 
+    { 
+        $lookup:{ 
+            from: "salary", 
+            localField: "SALARY_ID",  
+            foreignField: "SALARY_ID", 
+            as: "SalaryDetails"
+        } 
+    },
+    {
+        $unwind: "$SalaryDetails"
+    },
+    {
+        $sort: { "SalaryDetails.SALARY": -1 }
+    },
+    {
+        $match: { "SalaryDetails.SALARY": maxSalary}
+    }
+])
+
+3. Insert more data in employee and test the get query execution speed.
+-> db.employee.find({EMP_ID: 2000}).explain("executionStats")
+
+4. Find all the employee whose salary is similar to its manager.
+Ans: We will kind of populate employee salary and manager salary and then match it.
+db.employee.aggregate([ 
+    {
+        $lookup: {
+            from: 'salary', 
+            localField: 'SALARY_ID', 
+            foreignField: 'SALARY_ID', 
+            as: "employee_salary"
+        } 
+    }, 
+    {
+        $unwind: "$employee_salary"
+    }, 
+    {
+        $lookup: {
+            from:'employee', 
+            localField: 'MANAGER_ID', 
+            foreignField:'EMP_ID', 
+            as:'manager'
+            } 
+    }, 
+    {
+        $unwind: "$manager"
+    }, 
+    {
+        $lookup: {
+            from: 'salary', 
+            localField: 'manager.SALARY_ID', 
+            foreignField: 'SALARY_ID', 
+            as: 'manager_salary' 
+        } 
+    },
+    {
+        $match: {
+            'employee_salary.SALARY': 'manager_salary.SALARY'
+        }
+    }
+])
+
+5. List all employees who are managers themselves and also have a manager:
+
+
+4. Make replica set and sharing practice query.
+
+
+

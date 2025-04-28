@@ -1,0 +1,49 @@
+{
+    "name": "m3m",
+    "version": "1.0.0",
+    "description": "Backend for m3m",
+    "main": "src/index.mjs",
+    "type": "module",
+    "scripts": {
+        "start": "node ./src/index.mjs",
+        "dev": "nodemon ./src/index.mjs",
+        "test": "jest --coverage",
+        "test:watch": "jest --watch"
+    },
+    "author": "Abhay",
+    "license": "ISC",
+    "dependencies": {
+        "axios": "^1.6.8",
+        "bcrypt": "^5.1.1",
+        "body-parser": "^1.20.2",
+        "cookie-parser": "^1.4.6",
+        "cors": "^2.8.5",
+        "csv-parser": "^3.2.0",
+        "csv-writer": "^1.6.0",
+        "dotenv": "^16.4.5",
+        "exceljs": "^4.4.0",
+        "express": "^4.19.2",
+        "express-rate-limit": "^7.2.0",
+        "form-data": "^4.0.1",
+        "helmet": "^8.0.0",
+        "joi": "^17.13.3",
+        "jsonwebtoken": "^9.0.2",
+        "jszip": "^3.10.1",
+        "lodash": "^4.17.21",
+        "moment-timezone": "^0.5.45",
+        "morgan": "^1.10.0",
+        "multer": "^1.4.5-lts.1",
+        "mysql2": "^3.13.0",
+        "nodemon": "^3.1.0",
+        "pdfkit": "^0.16.0",
+        "raw-body": "^2.5.2",
+        "sequelize": "^6.37.6",
+        "swagger-jsdoc": "^6.2.8",
+        "swagger-ui-express": "^5.0.1",
+        "uuid": "^10.0.0",
+        "winston": "^3.17.0"
+    },
+    "devDependencies": {
+        "sequelize-cli": "^6.6.2"
+    }
+}

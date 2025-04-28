@@ -1,0 +1,36 @@
+Day-1
+Pulling a MySQL image and making db ops
+1. docker pull MySQL
+2. docker run -it --name mysql-container -e MYSQL_ROOT_PASSWORD=abhay -v C:\Users\orange\Desktop\mysql-data:/var/lib/mysql mysql
+3. docker exec -it mysql-container bash
+4. mysql -u root -p
+5. show databases;
+6. create database my_db;
+7. use my_db;
+8. CREATE TABLE SALARY (SALARY_ID INT PRIMARY KEY, SALARY INT, DEDUCTIONS INT);
+
++-----------+--------+------------+
+| SALARY_ID | SALARY | DEDUCTIONS |
++-----------+--------+------------+
+|         1 |  30000 |          0 |
+|         2 |  50000 |          0 |
+|         3 |  40000 |          0 |
+|         4 |  60000 |          0 |
+|         5 |  70000 |          0 |
++-----------+--------+------------+
+
+9. CREATE TABLE EMPLOYEE (EMP_ID INT PRIMARY KEY, NAME TEXT, MANAGER_ID INT, SALARY_ID INT, FOREIGN KEY(MANAGER_ID) REFERENCES EMP(EMP_ID), FOREIGN KEY(SALARY_ID) REFERENCES SALARY(SALARY_ID))
+
+
+Day-2
+1. docker restart mysql-container
+2. docker exec -it mysql-container MySQL -u root -p
+3. 
+
+
+
+
+
+
+
+

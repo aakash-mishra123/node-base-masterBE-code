@@ -1,0 +1,141 @@
+pipeline {
+    agent any
+    tools {
+        nodejs 'NodeJS'
+    }
+    environment {
+        SERVER_HOST = '192.168.200.34'
+        SERVER_PORT = '22'
+        REMOTE_DIRECTORY = '/var/www/html/demo14.ciadmin.in/backend'
+        APP_NAME = 'index'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', credentialsId: 'shashankgittoken', url: 'https://git.orangemantra.org/helpdesk/bcg-matchmaking-node.git'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no -p ${SERVER_PORT} demo14@${SERVER_HOST} "
+                        echo 'Changing directory to ${REMOTE_DIRECTORY}' &&
+                        cd ${REMOTE_DIRECTORY} ||
+                        { echo 'Failed to change directory'; exit 1; } &&
+                        echo 'Pulling latest changes from git' &&
+                        git pull origin main ||
+                        { echo 'Failed to pull from git'; exit 1; } &&
+                        echo 'Installing dependencies' &&
+                        npm install ||
+                        { echo 'Failed to install dependencies'; exit 1; } &&
+                        echo 'Stopping the application' &&
+                        pm2 stop ${APP_NAME} || true &&
+                        echo 'Starting the application' &&
+                        cd /var/www/html/demo14.ciadmin.in/backend/src &&
+                        pm2 start index.mjs ||
+                        { echo 'Failed to start application'; exit 1; }
+                    "
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                def color = '#4CAF50' // Green for success
+                if (currentBuild.result == 'FAILURE') {
+                    color = '#FF0000' // Red for failure
+                } else if (currentBuild.result == 'UNSTABLE') {
+                    color = '#FFD700' // Yellow for unstable
+                }
+
+                emailext(
+                    body: """<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    padding: 20px;
+    margin: 0;
+}
+.email-container {
+    background-color: #ffffff;
+    width: 600px;
+    margin: auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+.header {
+    background-color: ${color};
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+.footer {
+    text-align: center;
+    font-size: 12px;
+    color: #888888;
+    padding-top: 10px;
+}
+a {
+    color: #337ab7;
+}
+a:hover {
+    text-decoration: underline;
+}
+</style>
+</head>
+<body>
+<div class="email-container">
+<div class="header">
+    Jenkins Build Notification
+</div>
+<table>
+<tr>
+<th>Project</th>
+<td>${env.JOB_NAME}</td>
+</tr>
+<tr>
+<th>Build</th>
+<td>#${env.BUILD_NUMBER} - ${currentBuild.result}</td>
+</tr>
+<tr>
+<th>Results</th>
+<td>Check console output at <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></td>
+</tr>
+</table>
+<div class="footer">
+    Thanks,<br>
+    Jenkins Team<br>
+    <span>This is an automated message. Please do not reply.</span>
+</div>
+</div>
+</body>
+</html>
+                    """,
+                    mimeType: 'text/html',
+                    subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${currentBuild.result}",
+                    to: 'shekher.shashank@orangemantra.in, parmod@orangemantra.in, yadav.gaurav1@orangemantra.in,kumar.abhay@orangemantra.in, devops@orangemantra.in',
+                    replyTo: '${DEFAULT_REPLYTO}'
+                )
+            }
+        }
+    }
+}
