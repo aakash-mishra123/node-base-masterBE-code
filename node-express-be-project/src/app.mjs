@@ -7,7 +7,7 @@ import helmet from 'helmet';
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUI from "swagger-ui-express";
 
-import { apiLimiter, bodyParserConfig, corsOptions, expressJson, handleBase64Body } from './middlewares/appMiddleware.mjs';
+import { apiLimiter, bodyParserConfig, corsOptions, expressJson, handleBase64Body, setSecurityHeaders } from './middlewares/appMiddleware.mjs';
 import { accessLogStream } from './config/index.mjs';
 import { ErrorHandler } from './utils/errorHandler.mjs';
 import './utils/expressTypes.mjs';
@@ -36,6 +36,7 @@ export class App {
         // Security Middleware
         this.app.use(cookieParser());
         this.app.use(helmet());
+        this.app.use(setSecurityHeaders);
         this.app.disable('etag');
         this.app.disable('x-powered-by');
 

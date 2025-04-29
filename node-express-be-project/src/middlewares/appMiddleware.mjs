@@ -126,3 +126,8 @@ export const verifyOurOrigin = (req, res, next) => {
         return res.status(403).json({ message: 'Origin not allowed' });
     }
 };
+
+export const setSecurityHeaders = (req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    next();
+};
