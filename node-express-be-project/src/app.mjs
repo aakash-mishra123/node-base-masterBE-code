@@ -27,7 +27,6 @@ export class App {
 
     _initializeMiddlewares() {
         this.app.set('trust proxy', 1);
-
         // JSON & Base64 Middleware
         this.app.set('trust proxy', 1);
         this.app.use(expressJson);

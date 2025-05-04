@@ -9,4 +9,4 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: abhay  
     volumes:
-      - "C:\\ProgramData\\MySQL\\mysql-data:/var/lib/mysql" 
+      - "./mysql-data:/var/lib/mysql" 

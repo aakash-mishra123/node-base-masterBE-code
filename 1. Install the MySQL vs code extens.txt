@@ -2,18 +2,15 @@
 2. Start the docker and hit docker compose up. docker-compose up -d
 3. initiate the connection.
 4. Create m3m db and hit the run button from MySQL queries file.
-4. Setup postman and hit create user api.
+5. Setup postman and hit create user api.
 
-}
+{
   name: 'Admin',
   email: 'admin@gmail.com',
   phone: '+91993422433',
   password: 'admin@123'
 }
 
-
-5. Generate private key : openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048
-6. Generate public key: openssl rsa -pubout -in private_key.pem -out public_key.pem
-
-
-10. Migrations: 
+6. Generate private key : openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048
+7. Generate public key: openssl rsa -pubout -in private_key.pem -out public_key.pem
+8. Migrations: 
